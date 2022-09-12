@@ -1,5 +1,5 @@
 # console_tester
-visual regression tester for desktop opengl
+side-by-side visual regression tester for desktop opengl
 
 program must take test file path on command line
 
