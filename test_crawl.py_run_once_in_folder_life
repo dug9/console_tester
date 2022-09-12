@@ -1,0 +1,56 @@
+#!/usr/bin/env python
+
+import os, sys, subprocess
+from sys import platform
+
+folders_counted = 0
+files_counted = 0
+tstfile = None
+def show_paths(path, recurse,splitpath):
+    global folders_counted
+    global files_counted
+    global tstfile
+    for the_file in os.listdir(path):
+        file_path = os.path.join(os.path.normpath(path), the_file)
+        if os.path.isdir(file_path):
+            pretty = file_path
+            if file_path[0] == ".":
+                pretty = file_path[2:]
+            pretty = pretty.replace("\\","/")
+            folders_counted = folders_counted + 1
+            if recurse:
+                if(splitpath):
+                    print("{0} {1}".format("P",pretty), file=tstfile)
+                show_paths(file_path, recurse,splitpath)
+                if splitpath:
+                    print("{0}".format("p"),file=tstfile)
+            else:
+                testname = os.path.join(pretty,"test_list.txt")
+                testname = testname.replace("\\","/")
+                print("{0} {1}".format("S",testname),file=tstfile)
+        if os.path.isfile(file_path):
+            pretty = file_path
+            if file_path[0] == ".":
+                pretty = file_path[2:]
+            pretty = pretty.replace("\\","/")
+            if splitpath:
+                (head,tail) = os.path.split(pretty)
+                pretty = tail
+            ok = not pretty[0:5] == "test_"
+            (root,ext) = os.path.splitext(pretty)
+            ok = ok and ext in [".wrl",".x3d",".x3dv",".gltf",".glb"]
+            if ok:
+                print("{0} {1}".format("F",pretty),file=tstfile)
+                files_counted = files_counted + 1
+
+if __name__ == "__main__":
+    start_folder = "."
+    recurse = False
+    splitpath = True
+    tstfile = open("test_list.txt","w")
+    show_paths(start_folder,recurse,splitpath)
+    tstfile.close()
+
+    print("number of folders: " + str(folders_counted))
+    print("number of files: " + str(files_counted))
+
