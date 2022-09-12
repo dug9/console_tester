@@ -156,7 +156,7 @@ struct tlist* load_test_list(struct ttest* tsuite)
 {
 	char test_list_path[1024];
 	path_concatonate(test_list_path, tsuite->file_path, tsuite->file_name);
-	if (!strncmp("http://", test_list_path, 7)){
+	if (!strncmp("http", test_list_path, 4)){
 		static int download_count = 0;
 		char local_file[1024], local_label[10];
 		// https://docs.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-createdirectorya
@@ -430,6 +430,7 @@ int crawl_list(struct tlist *tests, HWND shell_hwnd, struct progversion left, st
 				strcpy(killstr, "/im ");
 				strcat(killstr, right.progname);
 				ShellExecuteA(NULL, NULL, "taskkill.exe", killstr, NULL, FALSE); // SW_HIDE); //SW_SHOW);
+				Sleep(100);
 			}
 
 		}
