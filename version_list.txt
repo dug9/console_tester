@@ -1,0 +1,25 @@
+P ../../../freewrl/freex3d/projectfiles_2022/x64/Debug_glew/
+G "-g %dx%d+%d+%d"
+O --pin TT -J sm
+E freeWRL_beforeGeomRep.exe
+E freeWRL.exe
+o
+g
+p
+P ..\..\..\view3dscene\view3dscene-4.1.0-win64-x86_64\view3dscene\
+C 1
+G "--geometry %dx%d+%d+%d"
+Y 50
+E view3dscene.exe
+y
+g
+c
+p
+P C:\Program Files\SenseGraphics\H3DViewer\bin64\
+G "--screen=%dx%d --window_position=%dx%d"
+C
+E H3DViewer.exe
+c
+g
+p
+

@@ -1,0 +1,56 @@
+# #=comment, P=push path prefix p=pop path prefix F=scene file E=executable S=path to another suite_list.txt
+T 4000
+C 0
+P C:/Users/dougs/Documents/dev/source2/tests
+S test_list_all.txt
+S test_list_51.txt
+S CubeMapTexture/test_list.txt
+p
+P C:/Users/dougs/Documents/dev/source2/tests5
+S test_list.txt
+p
+P http://dug9.users.sourceforge.net/web3d/tests
+S test_list_all.txt
+S test_list_51.txt
+S CubeMapTexture/test_list.txt
+p
+P C:/Users/dougs/Documents/dev/source2/tests5
+S 7_Core/test_list.txt
+S 8_Time/test_list.txt
+S 9_Networking/test_list.txt
+S 10_Grouping/test_list.txt
+S 11_Rendering/test_list.txt
+S 12_Shape/test_list.txt
+S 13_Geometry3D/test_list.txt
+S 14_Geometry2D/test_list.txt
+S 15_Text/test_list.txt
+S 16_Sound/test_list.txt
+S 17_Lighting/test_list.txt
+S 18_Texturing/test_list.txt
+S 19_Interpolation/test_list.txt
+S 20_Pointing_device_sensor/test_list.txt
+S 21_Key_device_sensor/test_list.txt
+S 22_Environmental_sesnsor/test_list.txt
+S 23_Navigation/test_list.txt
+S 24_Environmental_effects/test_list.txt
+S 25_Geospatial/test_list.txt
+S 26_Humanoid_Animation/test_list.txt
+S 27_NURBS/test_list.txt
+S 28_Distributed_interactive_simulation/test_list.txt
+S 29_Scripting/test_list.txt
+S 30_Event_utilities/test_list.txt
+S 31_Programmable_shaders/test_list.txt
+S 32_CAD_geometry/test_list.txt
+S 33_Texturing3D/test_list.txt
+S 34_Cube_map_environmental_textuing/test_list.txt
+S 35_Layering/test_list.txt
+S 36_Layout/test_list.txt
+S 37_Rigid_body_physics/test_list.txt
+S 38_Picking/test_list.txt
+S 39_Followers/test_list.txt
+S 40_Particle_systems/test_list.txt
+S 41_Volume_rendering/test_list.txt
+S 42_Texture_projector/test_list.txt
+p
+c
+t
