@@ -409,6 +409,7 @@ int crawl_list(struct tlist *tests, HWND shell_hwnd, struct progversion left, st
 					case 'p': ipause = 1 - ipause; if (!ipause) ibreak = 1; break; // pause timed scene switch, or unpause if paused (example use case: phone rings in middle of testing)
 					case 's': time_scale++; /*printf("%d ", (int)(50.0 * pow(1.1, (double)time_scale)));*/ break; //faster auto-change-scene
 					case 'f': time_scale--; /*printf("%d ", (int)(50.0 * pow(1.1, (double)time_scale)));*/ break; //slower
+					case 'w': printf("\nhit enter when ready:"); _getch(); break;
 					default:
 						//user can use any char to code, and see code in test_report.txt, except the command codes above
 						//suggestion: toggle caps and use any caps key for scene coding
