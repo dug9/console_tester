@@ -696,7 +696,9 @@ int main() {
 	struct tlist *tests = load_test_list(tsuite);
 
 	// https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getshellwindow
-	HWND shell_hwnd = GetConsoleWindow(); // GetShellWindow(); 
+	HWND shell_hwnd = GetFocus(); // GetConsoleWindow(); // GetShellWindow(); 
+	SetForegroundWindow(shell_hwnd);
+	LockSetForegroundWindow(LSFW_LOCK);
 	//CoInitializeEx(NULL, COINIT_APARTMENTTHREADED | COINIT_DISABLE_OLE1DDE);
 
 	int done = crawl_list(tests,shell_hwnd,left,right);
