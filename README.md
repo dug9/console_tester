@@ -10,7 +10,7 @@ put paths to 2 or more exe versions in version_list.txt
 put paths to one or more test_list.txt in test_suite.txt
 
 run console_tester
-1. adjust size position of console window so minimum height at bottom of screen
+1. adjust size position of console window so not overlapping 2 graphics windows
 2. answer question prompts:
 * enter integer index to exe for left and right
 * enter integer index of test suite to run
