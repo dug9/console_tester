@@ -331,18 +331,24 @@ int crawl_list(struct tlist *tests, HWND shell_hwnd, struct progversion left, st
 				strcat(line, right.path);
 				//GetCurrentDirectoryA(1023, currentdir);
 				//SetCurrentDirectoryA(test->file_path);
-				ShellExecuteA(NULL, NULL, test->file_name, line, test->file_path, SW_SHOW);
 				irelease_foreground = 1;
 				//SetCurrentDirectoryA(currentdir);
+				Sleep(500);
 			}
 			else {
 				int show_console; //program show console over-rides scene-specific show-console when needed
 				//F run 2 freewrl side by side
+				int width = 800;
+				int height = 800;
+				if (test->show_console) {
+					width = 100; height = 100;
+					ipause = 1;
+				}
 				strcat(line, " ");
 				//strcat(line, "--geometry 800x800+0+50 ");
 				if (left.geomfmt) {
 					char geomstr[1024];
-					sprintf(geomstr, left.geomfmt, 800, 800, 0, left.yoffset);
+					sprintf(geomstr, left.geomfmt, width, height, 0, left.yoffset);
 					strcat(line, geomstr);
 					strcat(line, " ");
 				}
@@ -353,6 +359,12 @@ int crawl_list(struct tlist *tests, HWND shell_hwnd, struct progversion left, st
 				//printf("left line %s\n", line);
 				//ShellExecuteA(NULL, NULL, "C:\\Program Files\\SenseGraphics\\H3DViewer\\bin64\\H3DViewer.exe", line, NULL, show_console);
 				ShellExecuteA(NULL, NULL, left.path, line, NULL, show_console); // SW_HIDE); //SW_SHOW);
+				//ShellExecuteA(NULL, NULL, test->file_name, line, test->file_path, SW_SHOW);
+				if (1) {
+					Sleep(500);
+					HWND terminal = FindWindowA(NULL, left.path);
+					SetWindowPos(terminal, NULL, 0, 150, 800, 750, 0);
+				}
 
 				strcpy(line, scene_path);
 				//strcat(line, " -g 800x800+860+0_1 --pin TT -J sm"); 
@@ -363,7 +375,7 @@ int crawl_list(struct tlist *tests, HWND shell_hwnd, struct progversion left, st
 				//strcat(line, "--geometry 800x800+860+50 ");
 				if (right.geomfmt) {
 					char geomstr[1024];
-					sprintf(geomstr, right.geomfmt, 800, 800, 800, right.yoffset);
+					sprintf(geomstr, right.geomfmt, width, height, 800, right.yoffset);
 					strcat(line, geomstr);
 					strcat(line, " ");
 				}
@@ -372,9 +384,17 @@ int crawl_list(struct tlist *tests, HWND shell_hwnd, struct progversion left, st
 				//printf("right_line: %s ", line);
 				show_console = right.show_console ? SW_SHOW : showConsole;
 				//printf("C %d\n", show_console);
+				//xdg-open
 				ShellExecuteA(NULL, NULL, right.path, line, NULL, show_console); // SW_HIDE); //SW_SHOW);
-				Sleep(250);
+				if (1) {
+					Sleep(500);
+					HWND terminal = FindWindowA(NULL, right.path);
+					SetWindowPos(terminal, NULL,800, 150, 800, 750, 0);
+				}
+
+				Sleep(500);
 			}
+			//printf("shell_hwnd %p \n", shell_hwnd);
 			SetForegroundWindow(shell_hwnd);
 			static int once = 0;
 			static char blankline[121];
@@ -392,14 +412,16 @@ int crawl_list(struct tlist *tests, HWND shell_hwnd, struct progversion left, st
 			done = 0;
 			int maxloop = dutchTime / 50;
 			for (int k = 0; k < maxloop; k++) {
-				Sleep((int)(50.0*pow(1.1,(double)time_scale)));
+				Sleep((int)(50.0 * pow(1.1, (double)time_scale)));
 				// https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-setforegroundwindow
-				if(!(irelease_foreground && k < 10))
+				if (!(irelease_foreground && k < 10))
+				{
 					SetForegroundWindow(shell_hwnd);
+				}
 				//https://docs.microsoft.com/en-us/windows/win32/inputdev/keyboard-input-reference
 				// https://docs.microsoft.com/en-us/cpp/c-runtime-library/reference/kbhit?view=msvc-170
 				int ibreak = 0;
-				if (_kbhit()) {
+				if (_kbhit()) { //linux select + getchar()
 					int c = _getch();
 					switch (c) {
 					case 'n': ibreak = 1; break; //next, jump to next test scene
@@ -422,6 +444,7 @@ int crawl_list(struct tlist *tests, HWND shell_hwnd, struct progversion left, st
 				if (ibreak) break;
 			}
 			if (test->itype == 0) {
+				// linux pkill
 				//https://docs.microsoft.com/en-us/windows-server/administration/windows-commands/taskkill
 				char killstr[1024];
 				strcpy(killstr, "/im ");
@@ -475,7 +498,7 @@ void show_results_to_file(struct tlist* tests, float deltatime, FILE *fout)
 	memset(&tc, 0, sizeof(struct testcounts));
 	show_results(tests,fout, &tc);
 	SYSTEMTIME lt;
-	GetLocalTime(&lt);
+	GetLocalTime(&lt); // linux gettimeofday()
 	fprintf(fout, "# %s, %s %d %4d, %02d:%02d\n", day[lt.wDayOfWeek], month[lt.wMonth], lt.wDay, lt.wYear, lt.wHour, lt.wMinute);
 	fprintf(fout, "# elapsed time %f minutes\n", deltatime);
 	fprintf(fout, "# viewed: %d\n", tc.viewed);
@@ -491,7 +514,7 @@ int main() {
 	if (bname) printf("cwd: %s\n", bname);
 	//SYSTEMTIME start_time,end_time;
 	//GetSystemTime(&start_time);
-	ULONGLONG starttime = GetTickCount64();
+	ULONGLONG starttime = GetTickCount64(); // linux clock_getttime()
 	char* version_list_file = "version_list.txt";
 	char* suite_list_file = "suite_list.txt";
 	//have user select 2 program versions
@@ -696,8 +719,8 @@ int main() {
 	struct tlist *tests = load_test_list(tsuite);
 
 	// https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getshellwindow
-	HWND shell_hwnd = GetFocus(); // GetConsoleWindow(); // GetShellWindow(); 
-	SetForegroundWindow(shell_hwnd);
+	HWND shell_hwnd = GetFocus(); // GetConsoleWindow(); // GetShellWindow(); // x11 XGetInputFocus()
+	SetForegroundWindow(shell_hwnd); //x11 XRaiseWindow()
 	LockSetForegroundWindow(LSFW_LOCK);
 	//CoInitializeEx(NULL, COINIT_APARTMENTTHREADED | COINIT_DISABLE_OLE1DDE);
 
@@ -707,7 +730,9 @@ int main() {
 	ULONGLONG endtime = GetTickCount64();
 	float deltatime = (float)(endtime - starttime)/1000.0f/60.0f;
 	show_results_to_file(tests, deltatime, stdout);
-	FILE* fout = fopen("test_report.txt", "w+");
+	char fnamestr[200];
+	sprintf(fnamestr, "test_report_%d.txt", isuite);
+	FILE* fout = fopen(fnamestr, "w+");
 	show_results_to_file(tests, deltatime, fout);
 	fclose(fout);
 	printf("Done. Press Enter to exit:");
